@@ -50,7 +50,7 @@ public class PlayGround extends SurfaceView implements SurfaceHolder.Callback,On
 			Paint p=new Paint();
 			p.setColor(Color.RED);
 			p.setTextSize(100);
-			c.drawText("请竖屏进行游戏!", 0, p4 / 2, p);
+			c.drawText("请竖屏进行游戏!",0,p4 / 2,p);
 			getHolder().unlockCanvasAndPost(c);
 		}
 		// TODO: Implement this method
@@ -74,7 +74,7 @@ public class PlayGround extends SurfaceView implements SurfaceHolder.Callback,On
 		{
 			for (int j=0;j < 4;j++)
 			{
-				map[j][i] = new Number(j, i, 0);
+				map[j][i] = new Number(j,i,0);
 			}
 		}
 		score = 0;
@@ -83,7 +83,7 @@ public class PlayGround extends SurfaceView implements SurfaceHolder.Callback,On
 		gameStatus = true;
 	}
 
-	public void drawMap()
+	public void drawMap()//绘制游戏界面
 	{
 		Canvas c=getHolder().lockCanvas();
 		c.drawColor(Color.LTGRAY);
@@ -142,23 +142,23 @@ public class PlayGround extends SurfaceView implements SurfaceHolder.Callback,On
 								Offseth + Width * n.getY(),
 								Offsetw + Width * (n.getX() + 1),
 								Offseth + Width * (n.getY() + 1),
-								(int)(0.5 * Offsetw), (int)(0.5 * Offsetw), p);
+								(int)(0.5 * Offsetw),(int)(0.5 * Offsetw),p);
 			}
 
 		}
 		//画计分板
 		Paint scorep=new Paint();
-		RectF rectScore=new RectF(Offsetw, Offsetw, Offsetw + Width * 4, scoreh);
+		RectF rectScore=new RectF(Offsetw,Offsetw,Offsetw + Width * 4,scoreh);
 		scorep.setColor(0xFFEEE4DA);
-		c.drawRoundRect(rectScore, (int)(0.5 * Offsetw), (int)(0.5 * Offsetw), scorep);
+		c.drawRoundRect(rectScore,(int)(0.5 * Offsetw),(int)(0.5 * Offsetw),scorep);
 		scorep.setTextSize(textsize);
 		scorep.setColor(Color.WHITE);
 		Rect minScoreRect=new Rect();
 		String text="当前得分:" + score;
-		scorep.getTextBounds(text, 0, text.length(), minScoreRect);
+		scorep.getTextBounds(text,0,text.length(),minScoreRect);
 		double Xs = (rectScore.width() - minScoreRect.width()) / 2;
 		double Ys = (rectScore.height() + minScoreRect.height()) / 2;
-		c.drawText(text, (int)(Offsetw + Xs), (int)(Offsetw + Ys), scorep);
+		c.drawText(text,(int)(Offsetw + Xs),(int)(Offsetw + Ys),scorep);
 		//绘制方块上的数字
 		for (int i=0;i < 4;i++)
 		{
@@ -173,12 +173,29 @@ public class PlayGround extends SurfaceView implements SurfaceHolder.Callback,On
 					pt.setColor(Color.WHITE);
 					String nums=num.toString();
 					Rect minRect=new Rect();
-					pt.getTextBounds(nums, 0, nums.length(), minRect);
+					pt.getTextBounds(nums,0,nums.length(),minRect);
 					double x = (Width - minRect.width()) / 2;
 					double y = (Width + minRect.height()) / 2;
-					c.drawText(nums, (int)(Offsetw + Width * n.getX() + x), (int)(Offseth + Width * n.getY() + y), pt);
+					c.drawText(nums,(int)(Offsetw + Width * n.getX() + x),(int)(Offseth + Width * n.getY() + y),pt);
 				}
 			}
+		}
+		if (isGameOver())//判断游戏是否结束
+		{
+			gameStatus = false;
+			Paint failp=new Paint();
+			failp.setColor(0xAFFFDAB9);
+			c.drawRoundRect(Offsetw,Offseth,Offsetw + Width * 4,Offseth + Width * 4,(int)(0.5 * Offsetw),(int)(0.5 * Offsetw),failp);
+			Paint ptf = new Paint();
+			ptf.setTextSize(textsize);
+			ptf.setColor(Color.WHITE);
+			Rect minRect=new Rect();
+			String failtext = "GameOver";
+			ptf.getTextBounds(failtext,0,failtext.length(),minRect);
+			double x = (Width*4 - minRect.width()) / 2;
+			double y = (Width*4 + minRect.height()) / 2;
+			c.drawText(failtext,(int)(Offsetw+ x),(int)(Offseth+ y),ptf);
+			Toast.makeText(getContext(),"游戏结束!",Toast.LENGTH_LONG).show();
 		}
 		getHolder().unlockCanvasAndPost(c);
 	}
@@ -319,48 +336,33 @@ public class PlayGround extends SurfaceView implements SurfaceHolder.Callback,On
 				case ACTION_CLICK:
 					break;
 			}
-			if (isGameOver())
-			{
-				try
-				{
-					Thread.sleep(1000);
-				}catch(Exception e){
-				}
-				Canvas c=getHolder().lockCanvas();
-				gameStatus = false;
-				Paint failp=new Paint();
-				failp.setColor(0x7FFFDAB9);
-				c.drawRoundRect(Offsetw, Offseth, Offsetw + Width * 4, Offseth + Width * 4, (int)(0.5 * Offsetw), (int)(0.5 * Offsetw), failp);
-				getHolder().unlockCanvasAndPost(c);
-				Toast.makeText(getContext(), "游戏结束!", Toast.LENGTH_LONG).show();
-			}
 		}
 	}
 	private int getDirecton()
 	{
 		if ((x1 - x2) > 0.5 * Width && (x1 - x2) > Math.abs(y1 - y2))
 		{//向左滑动
-			Toast.makeText(getContext(), "左滑!", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getContext(),"左滑!",Toast.LENGTH_SHORT).show();
 			return ACTION_LEFT;
 		}
 		else if ((y1 - y2) > 0.5 * Width && (y1 - y2) > Math.abs(x1 - x2))
 		{//向上滑动
-			Toast.makeText(getContext(), "上滑!", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getContext(),"上滑!",Toast.LENGTH_SHORT).show();
 			return ACTION_UP;
 		}
 		else if ((x2 - x1) > 0.5 * Width && (x2 - x1) > Math.abs(y1 - y2))
 		{//向右滑动
-			Toast.makeText(getContext(), "右滑!", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getContext(),"右滑!",Toast.LENGTH_SHORT).show();
 			return ACTION_RIGHT;
 		}
 		else if ((y2 - y1) > 0.5 * Width && (y2 - y1) > Math.abs(x1 - x2))
 		{//向下滑动
-			Toast.makeText(getContext(), "下滑!", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getContext(),"下滑!",Toast.LENGTH_SHORT).show();
 			return ACTION_DOWN;
 		}
 		else
 		{
-			Toast.makeText(getContext(), "点击!", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getContext(),"点击!",Toast.LENGTH_SHORT).show();
 			return ACTION_CLICK;
 		}
 	}
