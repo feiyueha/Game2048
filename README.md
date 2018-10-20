@@ -1,2 +1,2 @@
 # Game2048
-A small Android Game
+2048小游戏
